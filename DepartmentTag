@@ -1,0 +1,15 @@
+#PowerShell to find missing department Tag
+
+Install-Module -Name Az -AllowClobber -Scope CurrentUser
+Import-Module Az
+
+Connect-AzAccount
+
+Get-AzContext
+
+#Gets all resources without department tag 
+Get-AzResource | Where-Object {
+    $_.Tags -eq $null -or
+    -not $_.Tags.ContainsKey("department") -or
+    [string]::IsNullOrWhiteSpace($_.Tags["department"])
+} | Select-Object Name, ResourceGroupName, ResourceType
