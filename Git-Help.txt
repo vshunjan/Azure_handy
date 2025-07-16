@@ -1,0 +1,28 @@
+
+GitHub CLI
+
+
+
+
+cd /path/to/your/repo
+
+git clone https://github.com/vshunjan/Azure_handy.git
+
+
+git status
+git add test.html
+git commit -m "Add test.html"
+git remote add origin https://github.com/SUB2Technologies/SUB2_website.git
+git push --set-upstream origin main
+
+GitHub commit changes
+git add .
+git commit -m "<>"
+git push origin main
+
+Rename and push changes
+git mv site/test.html site/index.html
+git commit -m "Rename test.html to index.html in site folder"
+git push origin main
+
+https://docs.github.com/en/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax#line-breaks
