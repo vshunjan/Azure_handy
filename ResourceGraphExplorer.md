@@ -30,6 +30,19 @@ resources
 | project nsg=name, rule=rule.name, port=rule.properties.destinationPortRange
 ```
 
+### 🔎 High-Risk Management Ports
+```
+resources
+| where type == "microsoft.network/networksecuritygroups"
+| mv-expand rules = properties.securityRules
+| where rules.properties.access == "Allow" 
+    and rules.properties.direction == "Inbound"
+    and rules.properties.protocol in ("Tcp", "*")
+| extend destinationPort = tostring(rules.properties.destinationPortRange)
+| where destinationPort in ("3389", "22", "445") 
+    or destinationPort == "*"
+| project nsgName = name, ruleName = rules.name, destinationPort, resourceGroup
+```
 
 ## 🌐 Storage 
 
@@ -43,6 +56,18 @@ resources
 | join kind=leftouter (
     resourcecontainers 
     | where type == "microsoft.resources/subscriptions" 
+    | project subscriptionName = name, subscriptionId
+) on subscriptionId
+| project name, resourceGroup, subscriptionName, location
+```
+
+```
+resources
+| where type == "microsoft.storage/storageaccounts"
+| where properties.networkAcls.defaultAction == "Allow" 
+    or isnull(properties.networkAcls)
+| join kind=leftouter (
+    resourcecontainers | where type == "microsoft.resources/subscriptions" 
     | project subscriptionName = name, subscriptionId
 ) on subscriptionId
 | project name, resourceGroup, subscriptionName, location
@@ -75,4 +100,18 @@ resources
 | where type == "microsoft.storage/storageaccounts"
 | where properties.networkAcls.defaultAction == "Allow"
 | project name, resourceGroup
+```
+
+## Web Apps 
+
+### Web Apps with "Easy" Security Gaps
+
+```resources
+| where type == "microsoft.web/sites"
+| where properties.httpsOnly == false 
+    or properties.siteConfig.minTlsVersion != "1.2"
+| project name, 
+    httpsOnly = properties.httpsOnly, 
+    tlsVersion = properties.siteConfig.minTlsVersion, 
+    resourceGroup
 ```
