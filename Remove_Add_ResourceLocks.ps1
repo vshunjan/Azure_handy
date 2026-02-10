@@ -1,7 +1,7 @@
-# Install Az if needed
-if (-not (Get-Module -ListAvailable -Name Az)) {
-  Install-Module Az -Scope CurrentUser -Repository PSGallery -Force
-}
+﻿# Install Az if needed
+#if (-not (Get-Module -ListAvailable -Name Az)) {
+#  Install-Module Az -Scope CurrentUser -Repository PSGallery -Force
+#}
 
 # Sign in (interactive)
 Connect-AzAccount

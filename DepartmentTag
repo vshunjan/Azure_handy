@@ -7,9 +7,27 @@ Connect-AzAccount
 
 Get-AzContext
 
+#Get All Subscriptions
+Get-AzSubscription
+
+#Set the default subscription:
+Set-AzContext -SubscriptionId "86591987-9777-4cb6-879b-922d5a55af1e"
+
+
 #Gets all resources without department tag 
 Get-AzResource | Where-Object {
     $_.Tags -eq $null -or
     -not $_.Tags.ContainsKey("department") -or
     [string]::IsNullOrWhiteSpace($_.Tags["department"])
 } | Select-Object Name, ResourceGroupName, ResourceType
+
+
+# Get all resources missing the 'department' tag
+$missingTagResources = Get-AzResource | Where-Object {
+    $_.Tags -eq $null -or
+    -not $_.Tags.ContainsKey("department") -or
+    [string]::IsNullOrWhiteSpace($_.Tags["department"])
+} | Select-Object Name, ResourceGroupName, ResourceType, Location
+
+# Export to CSV file
+$missingTagResources | Export-Csv -Path "C:\junk\MissingDepartmentTags.csv" -NoTypeInformation

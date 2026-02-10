@@ -1,4 +1,4 @@
-<# 
+﻿<# 
 .SYNOPSIS
 Recreate Azure locks from an exported JSON file.
 
